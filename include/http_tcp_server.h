@@ -6,8 +6,9 @@
 #include <sys/socket.h>
 #include <iostream>
 #include <string>
+#include <thread>
 #include <arpa/inet.h>
-
+#include <vector>
 #ifdef __linux__
 #include <linux/in.h>
 #endif
@@ -26,6 +27,9 @@ namespace http
         int m_socket;
         int m_new_socket;
         unsigned int m_socketAddress_len;
+        int m_maxClients = 20;
+        std::array<int, 20> m_clientSocket;
+        std::vector<std::thread> m_threadPool;
         int startServer();
         int acceptConnection();
         void readRequest(int socket);
