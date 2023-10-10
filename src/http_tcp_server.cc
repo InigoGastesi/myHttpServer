@@ -86,14 +86,20 @@ namespace http
 
     void TcpServer::readRequest(int socket){
         char buffer[BUFFER_SIZE];
-        std::cout << "socket: " << socket << std::endl;
-        int bytesReceived = read(socket, buffer, BUFFER_SIZE);
-        if(bytesReceived < 0){
-            exitWithError("Failed reading the request");
+        int bytesReceived = -1;
+        int readedBuffer = 0;
+        do
+        {
+            bytesReceived = read(socket, buffer, BUFFER_SIZE);
+            readedBuffer += BUFFER_SIZE;
+            if(bytesReceived < 0){
+                exitWithError("Failed reading the request");
+            }
+            std::string request(buffer);
+            httpParser header = httpParser(request);
+            // std::cout << request << std::endl;
         }
-        std::string request(buffer);
-        std::cout << request << std::endl;
-
+        while(bytesReceived != 0);
     }
 
     void TcpServer::sendResponse(int socket){

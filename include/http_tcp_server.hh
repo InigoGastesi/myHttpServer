@@ -1,11 +1,12 @@
 #ifndef INCLUDED_HTTP_TCPSERVER_LINUX
 #define INCLUDED_HTTP_TCPSERVER_LINUX
-#define BUFFER_SIZE 30720
+#define BUFFER_SIZE 2048
 
 
 #include <sys/socket.h>
 #include <iostream>
 #include <string>
+#include <httpParser.hh>
 #include <thread>
 #include <arpa/inet.h>
 #include <vector>
@@ -34,7 +35,6 @@ namespace http
         void readRequest(int socket);
         void sendResponse(int socket);
         void processRequest(int socket);
-        void httpParser(std::string buffer);
     };
 } // namespace http
 #endif
