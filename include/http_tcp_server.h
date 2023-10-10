@@ -29,10 +29,11 @@ namespace http
         unsigned int m_socketAddress_len;
         int m_maxClients = 20;
         std::array<int, 20> m_clientSocket;
-        std::vector<std::thread> m_threadPool;
         int startServer();
         int acceptConnection();
         void readRequest(int socket);
+        void sendResponse(int socket);
+        void processRequest(int socket);
     };
 } // namespace http
 #endif

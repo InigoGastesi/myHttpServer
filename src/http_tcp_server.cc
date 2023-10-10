@@ -25,7 +25,6 @@ namespace http
         m_socketAddress.sin_family = AF_INET;
         m_socketAddress.sin_port = htons(m_port);
         m_socketAddress.sin_addr.s_addr = inet_addr(m_ip_address.c_str());
-        m_threadPool.reserve(10);
         startServer();
     }
     TcpServer::~TcpServer()
@@ -61,29 +60,11 @@ namespace http
         << " PORT: " << ntohs(m_socketAddress.sin_port)
         << "***\n\n";
         log(ss.str());
-        fd_set readfds;
-        int max_sd;
-        int sd;
-        int activity;
-        for(int i = 0; i < m_maxClients; i++){
-            m_clientSocket[i] = 0;
-        }
+        int new_socket;
         while(true){
-            FD_ZERO(&readfds);
-            FD_SET(m_socket, &readfds);
-            max_sd = m_socket;
-            for(int i = 0; i < m_maxClients; i++){
-                sd = m_clientSocket[i];
-
-                if (sd > 0)
-                    FD_SET(sd, &readfds);
-                if(sd > max_sd)
-                    max_sd = sd;
-            }
-            activity = select( max_sd + 1 , &readfds , NULL , NULL , NULL);
-            // m_new_socket = acceptConnection();
-            std::cout << "incoming connection" << std::endl;
-
+            new_socket = acceptConnection();
+            std::thread t(&TcpServer::processRequest, this, new_socket);
+            t.detach();
         }
     }
 
@@ -97,16 +78,37 @@ namespace http
         return new_socket;
     }
 
+    void TcpServer::processRequest(int socket){
+        readRequest(socket);
+        sendResponse(socket);
+        close(socket);
+    }
+
     void TcpServer::readRequest(int socket){
         char buffer[BUFFER_SIZE];
+        std::cout << "socket: " << socket << std::endl;
         int bytesReceived = read(socket, buffer, BUFFER_SIZE);
         if(bytesReceived < 0){
             exitWithError("Failed reading the request");
         }
-        sleep(3);
         std::string request(buffer);
         std::cout << request << std::endl;
 
     }
+
+    void TcpServer::sendResponse(int socket){
+        std::string response = "que tal?";
+        long byteSent = write(socket, response.c_str(), response.size());
+        
+        if (byteSent == response.size())
+        {
+            log("------ Server Response sent to client ------\n\n");
+        }
+        else
+        {
+            log("Error sending response to client");
+        }
+    }
+
 
 }
