@@ -34,6 +34,7 @@ namespace http
         void readRequest(int socket);
         void sendResponse(int socket);
         void processRequest(int socket);
+        void httpParser(std::string buffer);
     };
 } // namespace http
 #endif

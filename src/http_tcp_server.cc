@@ -1,4 +1,4 @@
-#include <http_tcp_server.h>
+#include <http_tcp_server.hh>
 #include <iostream>
 #include <sstream>
 #include <unistd.h>
@@ -109,6 +109,4 @@ namespace http
             log("Error sending response to client");
         }
     }
-
-
 }
