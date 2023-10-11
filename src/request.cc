@@ -65,10 +65,19 @@ namespace http
             int index = it - spaces.begin();
             m_header.insert(std::pair<std::string, std::string>(key, spaces[index + 1]));
         }
+        else
+        {
+            m_header.insert(std::pair<std::string, std::string>(key, "0"));
+        }
     }
 
     unsigned int Request::getContentLength()
     {
         return m_contentLength;
+    }
+
+    void Request::addBufferToBody(std::string buffer)
+    {
+        m_body += buffer;
     }
 }

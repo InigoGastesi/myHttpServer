@@ -9,6 +9,8 @@ namespace http{
             Request(std::string request);
             ~Request();
             unsigned int getContentLength();
+            void addBufferToBody(std::string buffer);
+
 
         private:
             std::string m_rawRequest;

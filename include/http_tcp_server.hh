@@ -5,6 +5,7 @@
 
 #include <sys/socket.h>
 #include <iostream>
+#include <response.hh>
 #include <string>
 #include <request.hh>
 #include <thread>
@@ -22,14 +23,13 @@ namespace http
         ~TcpServer();
         void startListen();
     private:
-        std::string m_ip_address;
+        std::string m_ipAddress;
         struct sockaddr_in m_socketAddress;
         int m_port;
         int m_socket;
-        int m_new_socket;
+        int m_newSocket;
         unsigned int m_socketAddress_len;
         int m_maxClients = 20;
-        std::array<int, 20> m_clientSocket;
         int startServer();
         int acceptConnection();
         void readRequest(int socket);
