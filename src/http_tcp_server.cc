@@ -107,6 +107,8 @@ namespace http
         std::string request(buffer);
         Request req = Request(request);
         contentLength = req.getContentLength();
+        std::cout << request << std::endl;
+
         while (readedBuffer < contentLength && contentLength != 0)
         {
             bytesReceived = read(socket, buffer, BUFFER_SIZE);
@@ -117,7 +119,7 @@ namespace http
             }
             std::string request(buffer);
             req.addBufferToBody(request);
-            // std::cout << request << std::endl;
+            std::cout << request << std::endl;
         } 
     }
 
