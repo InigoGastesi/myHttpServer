@@ -6,7 +6,7 @@
 #include <sys/socket.h>
 #include <iostream>
 #include <string>
-#include <httpParser.hh>
+#include <request.hh>
 #include <thread>
 #include <arpa/inet.h>
 #include <vector>

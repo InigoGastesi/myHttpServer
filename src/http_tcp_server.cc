@@ -88,6 +88,7 @@ namespace http
         char buffer[BUFFER_SIZE];
         int bytesReceived = -1;
         int readedBuffer = 0;
+        unsigned int contentLength;
         do
         {
             bytesReceived = read(socket, buffer, BUFFER_SIZE);
@@ -96,10 +97,11 @@ namespace http
                 exitWithError("Failed reading the request");
             }
             std::string request(buffer);
-            httpParser header = httpParser(request);
+            Request req = Request(request);
+            contentLength = req.getContentLength();
             // std::cout << request << std::endl;
         }
-        while(bytesReceived != 0);
+        while(readedBuffer < contentLength);
     }
 
     void TcpServer::sendResponse(int socket){
