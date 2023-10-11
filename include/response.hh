@@ -5,6 +5,7 @@
 #include <iostream>
 #include <array>
 #include <algorithm>
+#include <vector>
 namespace http
 {
     class Response

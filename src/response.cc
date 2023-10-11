@@ -63,29 +63,38 @@ namespace http
             typePrefix = "image/";
         }
         header["Content-Type"] = typePrefix + fileType;
-        htmlFile.open("www"+URI, std::ios::in);
-        
-        if (htmlFile.is_open())
+        if (typePrefix == "image/")
         {
-            std::string temp;
-            if (typePrefix == "image/")
+            std::vector<char> buffer;
+            FILE *fileStream = fopen(("www"+URI).c_str(), "rb");
+            fseek(fileStream, 0, SEEK_END);
+            long file_length = ftell(fileStream);
+            rewind(fileStream);
+
+            buffer.resize(file_length);
+
+            int file_size = fread(&buffer[0], 1, file_length, fileStream);
+            header["Content-Length"] = std::to_string(file_size);
+            addStringToBody(std::string(buffer.begin(), buffer.end()));
+            fclose(fileStream);
+        }   
+        else
+        {
+            htmlFile.open("www"+URI);
+
+            if (htmlFile.is_open())
             {
-                char *buffer = new char[10000000];
-                *buffer = {0};
-                htmlFile.read(buffer, sizeof(char) * 10000000);
-                header["Content-Length"] = std::to_string((int)htmlFile.gcount());
-                addStringToBody(std::string(buffer));
-                htmlFile.close();
-            }   
-            else
-            {
+                std::string temp;
+            
                 while(getline(htmlFile, temp))
                 {
                     addStringToBody(temp);
                 }
                 htmlFile.close();
-            }              
+                            
+            }
         }
+        
         
     }
 
