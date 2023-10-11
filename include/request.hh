@@ -10,6 +10,8 @@ namespace http{
             ~Request();
             unsigned int getContentLength();
             void addBufferToBody(std::string buffer);
+            std::string getMethod();
+            std::string getURI();
 
 
         private:

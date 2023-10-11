@@ -14,6 +14,7 @@
 #ifdef __linux__
 #include <linux/in.h>
 #endif
+
 namespace http
 {
     class TcpServer
@@ -22,6 +23,7 @@ namespace http
         TcpServer(std::string ip_address, int port);
         ~TcpServer();
         void startListen();
+
     private:
         std::string m_ipAddress;
         struct sockaddr_in m_socketAddress;
@@ -32,8 +34,8 @@ namespace http
         int m_maxClients = 20;
         int startServer();
         int acceptConnection();
-        void readRequest(int socket);
-        void sendResponse(int socket);
+        Request readRequest(int socket);
+        void sendGetResponse(int socket, std::string URI);
         void processRequest(int socket);
     };
 } // namespace http

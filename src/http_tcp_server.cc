@@ -87,12 +87,15 @@ namespace http
 
     void TcpServer::processRequest(int socket)
     {
-        readRequest(socket);
-        sendResponse(socket);
+        Request req = readRequest(socket);
+        if (req.getMethod() == "GET")
+        {
+            sendGetResponse(socket, req.getURI());
+        }
         close(socket);
     }
 
-    void TcpServer::readRequest(int socket)
+    Request TcpServer::readRequest(int socket)
     {
         char buffer[BUFFER_SIZE];
         int bytesReceived = -1;
@@ -107,7 +110,7 @@ namespace http
         std::string request(buffer);
         Request req = Request(request);
         contentLength = req.getContentLength();
-        std::cout << request << std::endl;
+        // std::cout << request << std::endl;
 
         while (readedBuffer < contentLength && contentLength != 0)
         {
@@ -119,15 +122,16 @@ namespace http
             }
             std::string request(buffer);
             req.addBufferToBody(request);
-            std::cout << request << std::endl;
+            // std::cout << request << std::endl;
         } 
+        return req;
     }
 
 
-    void TcpServer::sendResponse(int socket)
+    void TcpServer::sendGetResponse(int socket, std::string URI)
     {
         Response res = Response();
-        res.writeHtmlInBody("/index.html");
+        res.writeHtmlInBody(URI);
         std::string strRes = res.responseToString(200);
         long byteSent = write(socket, strRes.c_str(), strRes.size());
 

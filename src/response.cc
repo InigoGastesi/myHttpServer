@@ -53,17 +53,38 @@ namespace http
 
     void Response::writeHtmlInBody(std::string URI)
     {
+        if(URI == "/")
+            URI = "/index.html";
         std::fstream htmlFile;
-        header["Content-Type"] = "text/html";
-        htmlFile.open("../www"+URI, std::ios::in);
+        std::string typePrefix = "text/";
+        std::string fileType = URI.substr(URI.find_last_of(".") + 1);
+        if(std::find(std::begin(imgFileType), std::end(imgFileType), fileType) != std::end(imgFileType))
+        {
+            typePrefix = "image/";
+        }
+        header["Content-Type"] = typePrefix + fileType;
+        htmlFile.open("www"+URI, std::ios::in);
+        
         if (htmlFile.is_open())
         {
             std::string temp;
-            while(getline(htmlFile, temp))
+            if (typePrefix == "image/")
             {
-                addStringToBody(temp);
-            }
-            htmlFile.close();
+                char *buffer = new char[10000000];
+                *buffer = {0};
+                htmlFile.read(buffer, sizeof(char) * 10000000);
+                header["Content-Length"] = std::to_string((int)htmlFile.gcount());
+                addStringToBody(std::string(buffer));
+                htmlFile.close();
+            }   
+            else
+            {
+                while(getline(htmlFile, temp))
+                {
+                    addStringToBody(temp);
+                }
+                htmlFile.close();
+            }              
         }
         
     }

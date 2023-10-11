@@ -80,4 +80,14 @@ namespace http
     {
         m_body += buffer;
     }
+
+    std::string Request::getMethod()
+    {
+        return m_header["method"];
+    }
+
+    std::string Request::getURI()
+    {
+        return m_header["URI"];
+    }
 }
